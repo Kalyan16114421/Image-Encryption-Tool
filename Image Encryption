@@ -1,0 +1,59 @@
+from PIL import Image
+
+def encrypt_image(image_path, key):
+    """
+    Encrypts an image by swapping pixel values based on a key.
+
+    Args:
+        image_path: Path to the image file.
+        key: A secret key used to determine swap patterns.
+
+    Returns:
+        A new Image object representing the encrypted image.
+    """
+    img = Image.open(image_path)
+    width, height = img.size
+    pixels = img.load()
+
+    for x in range(width):
+        for y in range(height):
+            # Use key to determine swap pattern
+            if (x + y) % 2 == key % 2:
+                # Swap red and green values
+                r, g, b = pixels[x, y]
+                pixels[x, y] = (g, r, b)
+
+    return img
+
+def decrypt_image(encrypted_image, key):
+    """
+    Decrypts an encrypted image using the same key used for encryption.
+
+    Args:
+        encrypted_image: Encrypted image object.
+        key: The secret key used for decryption.
+
+    Returns:
+        A new Image object representing the decrypted image.
+    """
+    width, height = encrypted_image.size
+    pixels = encrypted_image.load()
+
+    for x in range(width):
+        for y in range(height):
+            if (x + y) % 2 == key % 2:
+                # Swap red and green values back
+                r, g, b = pixels[x, y]
+                pixels[x, y] = (g, r, b)
+
+    return encrypted_image
+
+# Example usage:
+original_image = r"C:\Users\imhem\Desktop\Image Encryption Tool\Groot.jpg"
+secret_key = 3 # Choose a secret key
+
+encrypted_img = encrypt_image(original_image, secret_key)
+encrypted_img.save(r"C:\Users\imhem\Desktop\Image Encryption Tool\encrypted_image.jpg") # save to the same folder
+
+decrypted_img = decrypt_image(encrypted_img, secret_key)
+decrypted_img.save(r"C:\Users\imhem\Desktop\Image Encryption Tool\decrypted_image.jpg") # save to the same folder
